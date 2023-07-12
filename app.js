@@ -2,6 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const exphbs = require("express-handlebars");
 const Todo = require("./models/todo");
+const bodyParser = require("body-parser");
 // 加入這段 code, 僅在非正式環境時, 使用 dotenv
 if (process.env.NODE_ENV !== "production") {
   require("dotenv").config();
@@ -30,6 +31,20 @@ app.get("/", (req, res) => {
     .then((todos) => res.render("index", { todos: todos })) // 將資料傳給 index 樣板
     .catch((e) => console.log(e));
 });
+//新增資料的頁面
+app.get("/todos/new", (req, res) => {
+  return res.render("new");
+});
+//app.post取得/todos/new新增的資料，透過bodyParse解資資料後存取至name
+app.use(bodyParser.urlencoded({ extended: true }));
+app.post("/todos", (req, res) => {
+  const name = req.body.name; // 從 req.body 拿出表單裡的 name 資料
+  return Todo.create({ name }) //存入資料庫
+    .then(() => res.redirect("/")) // 新增完成後導回首頁
+    .catch((e) => console.log(e));
+});
+
+//監聽localhost:3000
 app.listen("3000", () => {
   console.log("this is listening on localhost:3000");
 });
