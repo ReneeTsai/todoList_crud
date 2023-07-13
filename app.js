@@ -59,6 +59,18 @@ app.get("/todos/:id/edit", (req, res) => {
     .then((todo) => res.render("edit", { todo }))
     .catch((e) => console.log(e));
 });
+//post edit更改功能
+app.post("/todos/:id/edit", (req, res) => {
+  const id = req.params.id;
+  const name = req.body.name;
+  return Todo.findById(id)
+    .then((todo) => {
+      todo.name = name;
+      return todo.save();
+    })
+    .then(() => res.redirect(`/todos/${id}`))
+    .catch((e) => console.log(e));
+});
 
 //監聽localhost:3000
 app.listen("3000", () => {
