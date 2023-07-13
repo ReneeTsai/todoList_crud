@@ -71,7 +71,14 @@ app.post("/todos/:id/edit", (req, res) => {
     .then(() => res.redirect(`/todos/${id}`))
     .catch((e) => console.log(e));
 });
-
+//post delete功能
+app.post("/todos/:id/delete", (req, res) => {
+  const id = req.params.id;
+  return Todo.findById(id)
+    .then((todo) => todo.remove())
+    .then(() => res.redirect("/"))
+    .catch((e) => console.log(e));
+});
 //監聽localhost:3000
 app.listen("3000", () => {
   console.log("this is listening on localhost:3000");
