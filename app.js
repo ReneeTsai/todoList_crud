@@ -35,12 +35,28 @@ app.get("/", (req, res) => {
 app.get("/todos/new", (req, res) => {
   return res.render("new");
 });
-//app.post取得/todos/new新增的資料，透過bodyParse解資資料後存取至name
+//post取得/todos/new新增的資料，透過bodyParse解資資料後存取至name
 app.use(bodyParser.urlencoded({ extended: true }));
 app.post("/todos", (req, res) => {
   const name = req.body.name; // 從 req.body 拿出表單裡的 name 資料
   return Todo.create({ name }) //存入資料庫
     .then(() => res.redirect("/")) // 新增完成後導回首頁
+    .catch((e) => console.log(e));
+});
+//get detail 頁面
+app.get("/todos/:id", (req, res) => {
+  const id = req.params.id;
+  return Todo.findById(id)
+    .lean()
+    .then((todo) => res.render("detail", { todo }))
+    .catch((e) => console.log(e));
+});
+//get edit 頁面
+app.get("/todos/:id/edit", (req, res) => {
+  const id = req.params.id;
+  return Todo.findById(id)
+    .lean()
+    .then((todo) => res.render("edit", { todo }))
     .catch((e) => console.log(e));
 });
 
