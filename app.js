@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const exphbs = require("express-handlebars");
 const Todo = require("./models/todo");
 const bodyParser = require("body-parser");
+const methodOverride = require("method-override");
 // 加入這段 code, 僅在非正式環境時, 使用 dotenv
 if (process.env.NODE_ENV !== "production") {
   require("dotenv").config();
@@ -20,6 +21,9 @@ db.on("error", () => {
 db.once("open", () => {
   console.log("mongodb connected!");
 });
+//app.use
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(methodOverride("_method"));
 //handlebars set view engine
 app.engine("hbs", exphbs({ defaultLayout: "main", extname: ".hbs" }));
 app.set("view engine", "hbs");
@@ -28,6 +32,7 @@ app.get("/", (req, res) => {
   // 取出 Todo model 裡的所有資料
   Todo.find()
     .lean() // 把 Mongoose 的 Model 物件轉換成乾淨的 JavaScript 資料陣列
+    .sort({ _id: "asc" }) //asc代表升冪ascending排序，desc代表降冪descending排序
     .then((todos) => res.render("index", { todos: todos })) // 將資料傳給 index 樣板
     .catch((e) => console.log(e));
 });
@@ -36,7 +41,6 @@ app.get("/todos/new", (req, res) => {
   return res.render("new");
 });
 //post取得/todos/new新增的資料，透過bodyParse解資資料後存取至name
-app.use(bodyParser.urlencoded({ extended: true }));
 app.post("/todos", (req, res) => {
   const name = req.body.name; // 從 req.body 拿出表單裡的 name 資料
   return Todo.create({ name }) //存入資料庫
@@ -60,7 +64,7 @@ app.get("/todos/:id/edit", (req, res) => {
     .catch((e) => console.log(e));
 });
 //post edit更改功能
-app.post("/todos/:id/edit", (req, res) => {
+app.put("/todos/:id", (req, res) => {
   const id = req.params.id;
   const { name, isDone } = req.body;
   return Todo.findById(id)
@@ -73,7 +77,7 @@ app.post("/todos/:id/edit", (req, res) => {
     .catch((e) => console.log(e));
 });
 //post delete功能
-app.post("/todos/:id/delete", (req, res) => {
+app.delete("/todos/:id", (req, res) => {
   const id = req.params.id;
   return Todo.findById(id)
     .then((todo) => todo.remove())
