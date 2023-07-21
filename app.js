@@ -24,7 +24,15 @@ app.use(methodOverride("_method"));
 app.engine("hbs", exphbs({ defaultLayout: "main", extname: ".hbs" }));
 app.set("view engine", "hbs");
 //--server------------------------------------
+//
 usePassport(app);
+//usePassport(app) 之後、app.use(routes) 之前，加入middleware：
+app.use((req, res, next) => {
+  // 你可以在這裡 console.log(req.user) 等資訊來觀察
+  res.locals.isAuthenticated = req.isAuthenticated();
+  res.locals.user = req.user;
+  next();
+});
 //app.use(routes); 取代上面app.get("/", (req, res)
 app.use(routes); //將 request 導入路由器
 //新增資料的頁面搬移至routes.module.todo.js
