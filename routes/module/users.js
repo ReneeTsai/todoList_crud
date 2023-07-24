@@ -1,7 +1,7 @@
 const express = require("express");
+const router = express.Router();
 const passport = require("passport");
 const bcrypt = require("bcryptjs");
-const router = express.Router();
 const User = require("../../models/user");
 
 router.get("/login", (req, res) => {
@@ -29,6 +29,7 @@ router.post("/register", (req, res) => {
   if (password !== confirmPassword) {
     errors.push({ message: "密碼與確認密碼不相符！" });
   }
+
   if (errors.length) {
     return res.render("register", {
       errors,

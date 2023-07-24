@@ -9,8 +9,8 @@ const todoSchema = new Schema({
     type: Boolean,
     default: false,
   },
+  // 加入關聯設定type、ref:User model
   userId: {
-    // 加入關聯設定type、ref:User model
     type: Schema.Types.ObjectId,
     ref: "User",
     index: true,

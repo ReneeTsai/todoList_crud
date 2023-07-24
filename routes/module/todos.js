@@ -24,9 +24,9 @@ router.post("/", (req, res) => {
 });
 //get detail 頁面
 router.get("/:id", (req, res) => {
-  const id = req.params.id;
+  const _id = req.params.id;
   const userId = req.user._id;
-  return Todo.findOne({ id, userId })
+  return Todo.findOne({ _id, userId })
     .lean()
     .then((todo) => res.render("detail", { todo }))
     .catch((e) => console.log(e));
@@ -40,7 +40,7 @@ router.get("/:id/edit", (req, res) => {
     .then((todo) => res.render("edit", { todo }))
     .catch((e) => console.log(e));
 });
-//post edit更改功能
+//post edit更改功能--put
 router.put("/:id", (req, res) => {
   const _id = req.params.id;
   const userId = req.user._id;
