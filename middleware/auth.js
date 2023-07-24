@@ -1,3 +1,4 @@
+//使用者認證 (user authentication)」有關的 middleware
 //isAuthenticated() 是Passport.js 提供的函式
 module.exports = {
   authenticator: (req, res, next) => {
